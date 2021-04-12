@@ -1,6 +1,8 @@
 use reqwest;
+use super::RavenError;
 use serde::ser::{Serialize};
 use std::collections::HashMap;
+
 
 #[derive(Serialize, Deserialize)]
 pub struct RavenQuery{
@@ -32,7 +34,7 @@ impl RavenClient {
         format!("{}/databases/{}/{}", self.server, self.database, path.to_string())
     }
 
-    pub fn raw_query(&self, query: &RavenQuery) -> Result<(), reqwest::Error>  {
+    pub fn raw_query(&self, query: &RavenQuery) -> Result<(), RavenError>  {
         let url = &self.url("queries");
         let rslt = self.client.post(url)
             .json(&query)
@@ -43,13 +45,13 @@ impl RavenClient {
         Ok(())
     }
 
-    pub fn get(&self, id: &str) -> Result<String, reqwest::Error> {
+    pub fn get(&self, id: &str) -> Result<String, RavenError> {
         let resp = reqwest::blocking::get(&self.url(&format!("docs?id={}",id.to_string())))?
                     .json::<serde_json::Value>();                   
         Ok(resp?.to_string()) // return $this->_exec("GET", $url, 200, NULL)->Results[0];
     }
 
-    pub fn put<T>(&self, id: &str, doc: T) -> Result<(), reqwest::Error>  where T: Serialize{
+    pub fn put<T>(&self, id: &str, doc: T) -> Result<(), RavenError>  where T: Serialize{
         let rslt = self.client.put(&self.url(&format!("docs?id={}",id.to_string())))
             .json(&doc)
             .send();        
@@ -57,7 +59,7 @@ impl RavenClient {
         Ok(()) //return $this->_exec("PUT", $url, 201, $body);
     }
 
-    pub fn del(&self, id: &str) -> Result<(), reqwest::Error> {
+    pub fn del(&self, id: &str) -> Result<(), RavenError> {
         let rslt = self.client.delete(&self.url(&format!("docs?id={}",id.to_string())))
                     .send();
         println!("deleted: {:?}",rslt);
