@@ -1,4 +1,3 @@
-
 mod raven;
 #[macro_use] extern crate serde_derive;
 
@@ -16,13 +15,9 @@ fn main() {
     let rslt = client.put("users/ayende", &oren);
     println!("{:?}",rslt);
 
-
     let rslt = client.get::<Person>("users/ayende").unwrap();
     println!("{:#?}",rslt);
 
-//    test_query(&client);
-//    test_insert(&client);
-//    test_delete(&client);
 }
 
 
