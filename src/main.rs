@@ -10,7 +10,7 @@ fn main() {
         first_name: "Oren".to_string(), 
         last_name: "Ayende".to_string(),
         emails: vec!("ayende@ayende.com".to_string(), "oren@ravendb.net".to_string()),
-        age: 29, // age of Batman
+        age: 29, 
     };
 
     let rslt = client.put("users/ayende", &oren);
@@ -20,12 +20,15 @@ fn main() {
     let rslt = client.get::<Person>("users/ayende").unwrap();
     println!("{:#?}",rslt);
 
-    test_query(&client);
-    test_insert(&client);
-    test_delete(&client);
+//    test_query(&client);
+//    test_insert(&client);
+//    test_delete(&client);
 }
 
-fn test_query(client: &raven::RavenClient){
+
+#[test]
+fn test_query(){
+    let client = raven::RavenClient::new("http://localhost:8080","Demo", "");
     let mut rq = raven::RavenQuery{
         query: "from @empty where emails in ($emails)".to_string(),
         query_params: std::collections::HashMap::new(),
@@ -38,7 +41,10 @@ fn test_query(client: &raven::RavenClient){
 
 }
 
-fn test_insert(client: &raven::RavenClient){
+#[test]
+fn test_insert(){
+    let client = raven::RavenClient::new("http://localhost:8080","Demo", "");
+
     for n in 0..1000{
         let p = Person{ 
             first_name: n.to_string(), 
@@ -52,7 +58,9 @@ fn test_insert(client: &raven::RavenClient){
     }
 }
 
-fn test_delete(client: &raven::RavenClient){
+#[test]
+fn test_delete(){
+    let client = raven::RavenClient::new("http://localhost:8080","Demo", "");
     for n in 0..1000{
         let rslt = client.del(&format!("temp/{}", n.to_string()));
         println!("{:?}",rslt);
