@@ -7,7 +7,8 @@ use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct QueryResult<T>{
-    pub Results: Vec<T>,
+    #[serde(rename = "Results")]
+    pub results: Vec<T>,
 }
 
 //pub type RavenResult<T> = Result<T,RavenError>;

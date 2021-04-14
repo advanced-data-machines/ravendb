@@ -25,15 +25,12 @@ impl RavenClient {
         format!("{}/databases/{}/{}", self.server, self.database, path.to_string())
     }
 
-    pub fn raw_query(&self, query: &RavenQuery) -> Result<(), RavenError>  {
-        let url = &self.url("queries");
-        let rslt = self.client.post(url)
+    pub fn raw_query<T: serde::de::DeserializeOwned>(&self, query: &RavenQuery) -> Result<QueryResult<T>, RavenError>  {
+        let rslt: QueryResult<T> = self.client.post(&self.url("queries"))
             .json(&query)
-            .send();      
-
-        let json  = rslt?.text();
-        println!("{:#?}",json) ;
-        Ok(())
+            .send()?
+            .json()?;
+        Ok(rslt)
     }
 
     pub fn get<'a, T: serde::de::DeserializeOwned>(&self, id: &str) -> Result<QueryResult<T>, reqwest::Error> {
