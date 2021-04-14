@@ -1,5 +1,6 @@
 pub mod raven_client;
 pub mod error;
+
 pub use raven_client::{RavenClient};
 pub use error::{RavenError};
 
