@@ -36,14 +36,9 @@ impl RavenClient {
         Ok(())
     }
 
-    pub fn get<'a, T: serde::de::DeserializeOwned + Serialize>(&self, id: &str) -> Result<QueryResult<T>, reqwest::Error> {
+    pub fn get<'a, T: serde::de::DeserializeOwned>(&self, id: &str) -> Result<QueryResult<T>, reqwest::Error> {
         let resp = reqwest::blocking::get(&self.url(&format!("docs?id={}",id.to_string())))?
                     .json::<QueryResult<T>>()?;    
-//        println!("resp:\n{}",resp.to_string());
-//        let json = serde_json::to_string_pretty(&resp).unwrap();
-//        println!("json:\n{}",json);
-//        let qr: T = serde_json::from_value(resp).unwrap();
-                    //println!("{:?}",resp);                     
         Ok(resp)
     }
 
