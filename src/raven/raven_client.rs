@@ -1,22 +1,13 @@
 use reqwest;
-use super::RavenError;
+use super::{RavenQuery, QueryResult, RavenError};
 use serde::ser::{Serialize};
-use std::collections::HashMap;
 
-
-#[derive(Serialize, Deserialize)]
-pub struct RavenQuery{
-    #[serde(rename = "Query")]
-    pub query: String,
-
-    #[serde(rename = "QueryParameters")]
-    pub query_params: HashMap<String, Vec<String>>,
-}
 
 pub struct RavenClient{
     pub server: String, 
     pub database: String, 
     pub pem: String,
+
     client: reqwest::blocking::Client
 }
 
@@ -45,10 +36,15 @@ impl RavenClient {
         Ok(())
     }
 
-    pub fn get(&self, id: &str) -> Result<String, RavenError> {
+    pub fn get<'a, T: serde::de::DeserializeOwned + Serialize>(&self, id: &str) -> Result<QueryResult<T>, reqwest::Error> {
         let resp = reqwest::blocking::get(&self.url(&format!("docs?id={}",id.to_string())))?
-                    .json::<serde_json::Value>();                   
-        Ok(resp?.to_string()) // return $this->_exec("GET", $url, 200, NULL)->Results[0];
+                    .json::<QueryResult<T>>()?;    
+//        println!("resp:\n{}",resp.to_string());
+//        let json = serde_json::to_string_pretty(&resp).unwrap();
+//        println!("json:\n{}",json);
+//        let qr: T = serde_json::from_value(resp).unwrap();
+                    //println!("{:?}",resp);                     
+        Ok(resp)
     }
 
     pub fn put<T>(&self, id: &str, doc: T) -> Result<(), RavenError>  where T: Serialize{

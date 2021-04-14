@@ -6,8 +6,18 @@ fn main() {
     println!("RavenDB - Rust client test\n");
     let client = raven::RavenClient::new("http://localhost:8080","Demo", "");
 
-    let rslt = client.get("users/ayende");
+    let oren = Person{ 
+        first_name: "Oren".to_string(), 
+        last_name: "Ayende".to_string(),
+        age: 29, // age of Batman
+    };
+
+    let rslt = client.put("test/ayende", &oren);
     println!("{:?}",rslt);
+
+
+    let rslt = client.get::<Person>("test/ayende").unwrap();
+    println!("{:#?}",rslt);
     test_query(&client);
     test_insert(&client);
     test_delete(&client);
@@ -45,9 +55,10 @@ fn test_delete(client: &raven::RavenClient){
 }
 
 
-#[derive(Debug, Serialize,Deserialize,Clone)]
-struct Person{
-    first_name: String,
-    last_name: String,
-    age: u8,
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Person{
+    pub first_name: String,
+    pub last_name: String,
+    pub age: u8,
 }
+
