@@ -1,9 +1,11 @@
-mod raven;
+extern crate ravendb;
 #[macro_use] extern crate serde_derive;
+
+use ravendb::raven::{RavenClient, RavenQuery, QueryResult};
 
 fn main() {
     println!("RavenDB - Rust client test\n");
-    let client = raven::RavenClient::new("http://localhost:8080","Demo", "");
+    let client = RavenClient::new("http://localhost:8080","Demo", "");
 
     let oren = Person{ 
         first_name: "Oren".to_string(), 
@@ -23,8 +25,8 @@ fn main() {
 
 #[test]
 fn test_query(){
-    let client = raven::RavenClient::new("http://localhost:8080","Demo", "");
-    let mut rq = raven::RavenQuery{
+    let client = RavenClient::new("http://localhost:8080","Demo", "");
+    let mut rq = RavenQuery{
         query: "from @empty where emails in ($emails)".to_string(),
         query_params: std::collections::HashMap::new(),
     };
@@ -38,7 +40,7 @@ fn test_query(){
 
 #[test]
 fn test_insert(){
-    let client = raven::RavenClient::new("http://localhost:8080","Demo", "");
+    let client = RavenClient::new("http://localhost:8080","Demo", "");
 
     for n in 0..1000{
         let p = Person{ 
@@ -55,7 +57,7 @@ fn test_insert(){
 
 #[test]
 fn test_delete(){
-    let client = raven::RavenClient::new("http://localhost:8080","Demo", "");
+    let client = RavenClient::new("http://localhost:8080","Demo", "");
     for n in 0..1000{
         let rslt = client.del(&format!("temp/{}", n.to_string()));
         println!("{:?}",rslt);
