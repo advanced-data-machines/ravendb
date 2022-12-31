@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use reqwest;
 use super::{RavenQuery, QueryResult, RavenError};
 use serde::ser::{Serialize};
@@ -25,7 +26,6 @@ impl RavenClient {
         format!("{}/databases/{}/{}", self.server, self.database, path.to_string())
     }
 
-    #[allow(dead_code)]
     pub fn raw_query<T: serde::de::DeserializeOwned>(&self, query: &RavenQuery) -> Result<QueryResult<T>, RavenError>  {
         let rslt: QueryResult<T> = self.client.post(&self.url("queries"))
             .json(&query)
@@ -34,14 +34,13 @@ impl RavenClient {
         Ok(rslt)
     }
 
-    #[allow(dead_code)]
     pub fn get<'a, T: serde::de::DeserializeOwned>(&self, id: &str) -> Result<QueryResult<T>, reqwest::Error> {
         let resp = reqwest::blocking::get(&self.url(&format!("docs?id={}",id.to_string())))?
                     .json::<QueryResult<T>>()?;    
         Ok(resp)
     }
 
-    #[allow(dead_code)]
+
     pub fn put<T>(&self, id: &str, doc: T) -> Result<(), RavenError>  where T: Serialize{
         let rslt = self.client.put(&self.url(&format!("docs?id={}",id.to_string())))
             .json(&doc)
@@ -50,7 +49,6 @@ impl RavenClient {
         Ok(()) //return $this->_exec("PUT", $url, 201, $body);
     }
 
-    #[allow(dead_code)]
     pub fn del(&self, id: &str) -> Result<(), RavenError> {
         let rslt = self.client.delete(&self.url(&format!("docs?id={}",id.to_string())))
                     .send();
