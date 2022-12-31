@@ -23,7 +23,7 @@ impl RavenClient {
     }
 
     fn url(&self, path: &str) -> String {
-        format!("{}/databases/{}/{}", self.server, self.database, path.to_string())
+        format!("{}/databases/{}/{}", self.server, self.database, path)
     }
 
     pub fn raw_query<T: serde::de::DeserializeOwned>(&self, query: &RavenQuery) -> Result<QueryResult<T>, RavenError>  {
@@ -34,25 +34,23 @@ impl RavenClient {
         Ok(rslt)
     }
 
-    pub fn get<'a, T: serde::de::DeserializeOwned>(&self, id: &str) -> Result<QueryResult<T>, reqwest::Error> {
-        let resp = reqwest::blocking::get(&self.url(&format!("docs?id={}",id.to_string())))?
+    pub fn get<T: serde::de::DeserializeOwned>(&self, id: &str) -> Result<QueryResult<T>, reqwest::Error> {
+        let resp = reqwest::blocking::get(&self.url(&format!("docs?id={}",id)))?
                     .json::<QueryResult<T>>()?;    
         Ok(resp)
     }
 
 
     pub fn put<T>(&self, id: &str, doc: T) -> Result<(), RavenError>  where T: Serialize{
-        let rslt = self.client.put(&self.url(&format!("docs?id={}",id.to_string())))
+        self.client.put(&self.url(&format!("docs?id={}",id)))
             .json(&doc)
-            .send();        
-        println!("\n\n{:#?}",rslt);
+            .send()?;        
         Ok(()) //return $this->_exec("PUT", $url, 201, $body);
     }
 
     pub fn del(&self, id: &str) -> Result<(), RavenError> {
-        let rslt = self.client.delete(&self.url(&format!("docs?id={}",id.to_string())))
-                    .send();
-        println!("deleted: {:?}",rslt);
+        self.client.delete(&self.url(&format!("docs?id={}",id)))
+                    .send()?;
         Ok(())
     }    
 }

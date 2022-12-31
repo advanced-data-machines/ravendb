@@ -1,5 +1,5 @@
 #[macro_use] extern crate serde_derive;
-use ravendb::raven::{RavenClient, RavenQuery};
+use ravendb::client::{RavenClient, RavenQuery};
 
 const URL: &'static str = "http://localhost:8080";
 const DATABASE: &'static str = "Demo";

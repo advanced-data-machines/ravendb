@@ -1,6 +1,6 @@
 #[macro_use] extern crate serde_derive;
 
-use ravendb::raven::{RavenClient};
+use ravendb::client::{RavenClient};
 
 fn main() {
     println!("RavenDB - Rust client test\n");
@@ -19,7 +19,7 @@ fn main() {
     let rslt = client.get::<Person>("users/ayende").unwrap();
     println!("{:#?}",rslt);
 
-    let rslt = client.del("users/ayende").unwrap();
+    let rslt = client.del("users/ayende");
     println!("{:#?}",rslt);
 }
 
