@@ -5,7 +5,7 @@ authors = ["sjbeskur <sam@advanceddatamachines.com>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
 keywords = ["database", "nosql","oren"]
-homepage = ""
+homepage = "https://orbitalcalendar.com"
 description = "Basic Rust client for RavenDB"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
